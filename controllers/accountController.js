@@ -121,11 +121,17 @@ exports.getTransactionHistory = (req, res) => {
     let transactions = account.transactionHistory;
 
     if (startDate) {
-        transactions = transactions.filter(trans => DateTime.fromISO(trans.postingDate) >= DateTime.fromISO(startDate));
+        transactions = transactions.filter(trans => {
+            return DateTime.fromISO(trans.transTime) >= DateTime.fromISO(startDate); // Return the comparison
+        });
     }
+
     if (endDate) {
-        transactions = transactions.filter(trans => DateTime.fromISO(trans.postingDate) <= DateTime.fromISO(endDate));
+        transactions = transactions.filter(trans => {
+            return DateTime.fromISO(trans.transTime) <= DateTime.fromISO(endDate); // Return the comparison
+        });
     }
+
 
     const pageSize = 20; // Default load size
     let filteredTransactions = transactions;
