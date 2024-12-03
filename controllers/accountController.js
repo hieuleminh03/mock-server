@@ -15,7 +15,7 @@ exports.paymentAccountListInquiry = (req, res) => {
 
     const filteredAccounts = keyword
         ? accounts.filter(account => 
-            account.accountNo.includes(keyword) || account.accountName.toLowercase().includes(keyword.toLowercase())
+            account.accountNo.includes(keyword) || account.accountName.toLowerCase().includes(keyword.toLowerCase())
         )
         : accounts;
 
@@ -193,7 +193,7 @@ exports.depositAccountListInquiry = (req, res) => {
 
     const filteredAccounts = keyword
         ? accounts.filter(account => 
-            account.accountNo.includes(keyword) || account.accountName.includes(keyword)
+            account.accountNo.includes(keyword) || account.accountName.toLowerCase().includes(keyword.toLowerCase())
         )
         : accounts;
 
