@@ -26,14 +26,14 @@ const generateRandomString = (length) => {
 };
 
 const generateTransactionHistory = (accountNo) => {
-    const transactionCount = Math.floor(Math.random() * 51); 
+    const transactionCount = Math.floor(Math.random() * 200); 
     const transactions = [];
 
     for (let i = 0; i < transactionCount; i++) {
         const debitAmount = Math.random() < 0.5 ? (Math.random() * 1000).toFixed(2) : 0; 
         const creditAmount = debitAmount === 0 ? (Math.random() * 1000).toFixed(2) : 0; 
         const remark = `Transaction ${i + 1} for account ${accountNo}`;
-        const transTime = DateTime.now().minus({ days: Math.floor(Math.random() * 30) }).toISO(); 
+        const transTime = DateTime.now().minus({ days: Math.floor(Math.random() * 30), months: Math.floor(Math.random() * 12) }).toISO(); 
         const postingOrder = generateRandomString(15);
 
         const postingDateYear = Math.floor(Math.random() * (2024 - 2018 + 1)) + 2018;
@@ -54,6 +54,11 @@ const generateTransactionHistory = (accountNo) => {
         ));
     }
 
+    // Sort transactions by transaction time in ascending order
+    transactions.sort((a, b) => {
+        return DateTime.fromISO(a.transTime) - DateTime.fromISO(b.transTime);
+    });
+
     return transactions;
 };
 
@@ -62,7 +67,7 @@ const generateTransactionHistoryForDepositAccount = (accountNo) => {
     const transactions = [];
 
     for (let i = 0; i < transactionCount; i++) {
-        const effDate = DateTime.now().minus({ days: Math.floor(Math.random() * 30) }).toFormat('yyyy-MM-dd'); 
+        const effDate = DateTime.now().minus({ days: Math.floor(Math.random() * 30), months: Math.floor(Math.random() * 12) }).toFormat('yyyy-MM-dd'); 
         const nextRUNBAL = (Math.random() * 100000).toFixed(2); 
         const earlyRepaymentPenaltyInterest = (Math.random() * 100).toFixed(2); 
         const reducedOriginalAmount = (Math.random() * 50).toFixed(2); 
@@ -94,6 +99,11 @@ const generateTransactionHistoryForDepositAccount = (accountNo) => {
             moreRecordIndicator
         ));
     }
+
+    // Sort transactions by eff date in ascending order
+    transactions.sort((a, b) => {
+        return DateTime.fromISO(b.effDate) - DateTime.fromISO(a.effDate);
+    });
     return transactions;
 };
 
@@ -116,6 +126,11 @@ const generateMockAccounts = (totalCount) => {
         );
 
         account.transactionHistory = generateTransactionHistory(accountNo);
+
+        // randomly delete all transactions in some accounts
+        if (Math.random() < 0.2) {
+            account.transactionHistory = [];
+        }
 
         accounts.push(account);
     }
@@ -181,6 +196,11 @@ const generateMockDepositAccounts = (totalCount) => {
         );
 
         account.transactionHistory = generateTransactionHistoryForDepositAccount(accountNo);
+
+        // randomly delete all transactions in some accounts
+        if (Math.random() < 0.2) {
+            account.transactionHistory = [];
+        }
 
         accounts.push(account);
     }
